@@ -8,16 +8,17 @@
     android:background="@drawable/bgoverlay"
     tools:context=".MainActivity">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/profileImg"
         android:layout_marginTop="30dp"
         android:src="@drawable/akwhitelogo"
+        android:contentDescription="@string/profile_image_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
