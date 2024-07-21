@@ -2,8 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission
+
     android:name="android.permission.READ_MEDIA_IMAGES"
         tools:targetApi="33" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"

@@ -38,7 +38,7 @@ class EditProfileActivity : AppCompatActivity() {
         showData()
 
         saveButton.setOnClickListener {
-            if (isNameChanged() || isEmailChanged() || isPasswordChanged() || isUserNameChanged() || isPhoneNumberChanged()) {
+            if (saveData()) {
                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
                 setResult(RESULT_OK)
                 finish()
@@ -55,54 +55,47 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun isNameChanged(): Boolean {
-        val name = sharedPreferences.getString("name", null)
-        return if (name != editName.text.toString()) {
-            sharedPreferences.edit().putString("name", editName.text.toString()).apply()
-            true
-        } else {
-            false
-        }
-    }
+    private fun saveData(): Boolean {
+        val editor = sharedPreferences.edit()
 
-    private fun isEmailChanged(): Boolean {
-        val email = sharedPreferences.getString("email", null)
-        return if (email != editEmail.text.toString()) {
-            sharedPreferences.edit().putString("email", editEmail.text.toString()).apply()
-            true
-        } else {
-            false
-        }
-    }
+        val name = editName.text.toString()
+        val email = editEmail.text.toString()
+        val password = editPassword.text.toString()
+        val username = editUsername.text.toString()
+        val phone = editPhoneNumber.text.toString()
 
-    private fun isPasswordChanged(): Boolean {
-        val password = sharedPreferences.getString("password", null)
-        return if (password != editPassword.text.toString()) {
-            sharedPreferences.edit().putString("password", editPassword.text.toString()).apply()
-            true
-        } else {
-            false
-        }
-    }
+        var isChanged = false
 
-    private fun isUserNameChanged(): Boolean {
-        val username = sharedPreferences.getString("username", null)
-        return if (username != editUsername.text.toString()) {
-            sharedPreferences.edit().putString("username", editUsername.text.toString()).apply()
-            true
-        } else {
-            false
+        if (sharedPreferences.getString("name", null) != name) {
+            editor.putString("name", name)
+            isChanged = true
         }
-    }
 
-    private fun isPhoneNumberChanged(): Boolean {
-        val phone = sharedPreferences.getString("phone", null)
-        return if (phone != editPhoneNumber.text.toString()) {
-            sharedPreferences.edit().putString("phone", editPhoneNumber.text.toString()).apply()
-            true
-        } else {
-            false
+        if (sharedPreferences.getString("email", null) != email) {
+            editor.putString("email", email)
+            isChanged = true
         }
+
+        if (sharedPreferences.getString("password", null) != password) {
+            editor.putString("password", password)
+            isChanged = true
+        }
+
+        if (sharedPreferences.getString("username", null) != username) {
+            editor.putString("username", username)
+            isChanged = true
+        }
+
+        if (sharedPreferences.getString("phone", null) != phone) {
+            editor.putString("phone", phone)
+            isChanged = true
+        }
+
+        if (isChanged) {
+            editor.apply()
+        }
+
+        return isChanged
     }
 
     private fun showData() {

@@ -1,13 +1,16 @@
 package com.example.uas
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
@@ -19,6 +22,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private val storagePermissions = arrayOf(
-        Manifest.permission.READ_MEDIA_IMAGES
+        Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     private var isPasswordVisible: Boolean = false
@@ -60,7 +67,13 @@ class MainActivity : AppCompatActivity() {
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val selectedImageUri: Uri? = result.data?.data
-                profileImg.setImageURI(selectedImageUri)
+                if (selectedImageUri != null) {
+                    val savedImagePath = saveImageToInternalStorage(selectedImageUri)
+                    if (savedImagePath != null) {
+                        profileImg.setImageURI(Uri.parse(savedImagePath))
+                        saveImagePath(savedImagePath)
+                    }
+                }
             }
         }
 
@@ -113,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         val email = sharedPreferences.getString("email", "email")
         val username = sharedPreferences.getString("username", "username")
         val password = sharedPreferences.getString("password", "password")
+        val imagePath = sharedPreferences.getString("profileImagePath", null)
 
         profileName.text = name
         phoneNumber.text = phone
@@ -122,6 +136,12 @@ class MainActivity : AppCompatActivity() {
 
         titleName.text = name
         titleUsername.text = username
+
+        Log.d("MainActivity", "Loaded imagePath: $imagePath")
+        if (imagePath != null) {
+            val bitmap = BitmapFactory.decodeFile(imagePath)
+            profileImg.setImageBitmap(bitmap)
+        }
     }
 
     private fun updatePasswordVisibility() {
@@ -133,6 +153,30 @@ class MainActivity : AppCompatActivity() {
             togglePasswordVisibility.setImageResource(R.drawable.ic_eye_closed) // Icon for hidden
         }
         profilePassword.text = profilePassword.text // Refresh text to apply changes
+    }
+
+    private fun saveImageToInternalStorage(uri: Uri): String? {
+        val fileName = "profile_image.jpg"
+        val file = File(filesDir, fileName)
+        try {
+            val inputStream: InputStream? = contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+            return file.absolutePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    private fun saveImagePath(path: String) {
+        val sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("profileImagePath", path)
+        editor.apply()
+        Log.d("MainActivity", "Saved imagePath: $path")
     }
 
     override fun onRequestPermissionsResult(
