@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var profileUsername: TextView
     private lateinit var profilePassword: TextView
     private lateinit var editButton: Button
+    private lateinit var togglePasswordVisibility: ImageView
 
     private lateinit var titleName: TextView
     private lateinit var titleUsername: TextView
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private val storagePermissions = arrayOf(
         Manifest.permission.READ_MEDIA_IMAGES
     )
+
+    private var isPasswordVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         profileUsername = findViewById(R.id.profileUsername)
         profilePassword = findViewById(R.id.profilePassword)
         editButton = findViewById(R.id.editButton)
+        togglePasswordVisibility = findViewById(R.id.togglePasswordVisibility)
 
         titleName = findViewById(R.id.titleName)
         titleUsername = findViewById(R.id.titleUsername)
@@ -84,6 +89,11 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, 1)
         }
 
+        togglePasswordVisibility.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            updatePasswordVisibility()
+        }
+
         loadData()
     }
 
@@ -108,10 +118,21 @@ class MainActivity : AppCompatActivity() {
         phoneNumber.text = phone
         profileEmail.text = email
         profileUsername.text = username
-        profilePassword.text = password
+        profilePassword.text = password // Set the password text
 
         titleName.text = name
         titleUsername.text = username
+    }
+
+    private fun updatePasswordVisibility() {
+        if (isPasswordVisible) {
+            profilePassword.inputType = android.text.InputType.TYPE_CLASS_TEXT
+            togglePasswordVisibility.setImageResource(R.drawable.ic_eye_open) // Icon for visible
+        } else {
+            profilePassword.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            togglePasswordVisibility.setImageResource(R.drawable.ic_eye_closed) // Icon for hidden
+        }
+        profilePassword.text = profilePassword.text // Refresh text to apply changes
     }
 
     override fun onRequestPermissionsResult(
