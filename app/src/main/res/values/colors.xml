@@ -11,6 +11,8 @@
     <color name="grey">#ff424242</color>
     <color name="yellow">#ffbd00</color>
     <color name="brown">#4a4242</color>
+    <color name="light_grey">#70777f</color>
+    <color name="softer_grey">#D9DCE1</color>
 
 
     <item name="main" type="id" />

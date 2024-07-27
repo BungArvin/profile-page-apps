@@ -13,7 +13,7 @@
         android:layout_height="100dp"
         android:id="@+id/profileImg"
         android:layout_marginTop="30dp"
-        android:src="@drawable/akwhitelogo"
+        android:src="@drawable/profile"
         android:contentDescription="@string/profile_image_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -215,8 +215,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="10dp"
-                android:tint="@color/brown"
-                android:src="@drawable/ic_eye_closed"/>
+                android:src="@drawable/ic_eye_closed"
+                app:tint="@color/brown" />
 
             <HorizontalScrollView
                 android:layout_width="150dp"
